@@ -18,7 +18,8 @@ Application expects configuration provided as environment variables, available v
 The easies way to start the app is to follow steps:
 
 1. `docker-compose up -d`; starts mongodb server
-2. `MONGO_URL=mongodb://root:example@localhost:27017/admin go run main.go`; starts app on port 8000
+2. `dep ensure`; installs dependencies
+3. `MONGO_URL=mongodb://root:example@localhost:27017/admin go run main.go`; starts app on port 8000
 
 To stop mongo `docker-compose stop`
 To stop and remove container (and remove data) `docker-compose down`
@@ -28,7 +29,8 @@ To stop and remove container (and remove data) `docker-compose down`
 To run acceptance tests follow steps:
 
 1. `docker-compose up -d`; starts mongodb server
-2. `MONGO_URL=mongodb://root:example@localhost:27017/admin MONGO_DB_NAME=payments_test go test`; runs tests using `payments_test` database
+2. `dep ensure`; installs dependencies
+3. `MONGO_URL=mongodb://root:example@localhost:27017/admin MONGO_DB_NAME=payments_test go test`; runs tests using `payments_test` database
 
 ## API spec
 
