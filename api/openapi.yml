@@ -1,0 +1,260 @@
+openapi: 3.0.0
+
+info:
+  title: Payments service
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000/v1
+    description: Developers machine
+
+paths:
+  /payments:
+    get:
+      description: Returns list of payments
+      responses:
+        200:
+          description: A list of payments
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/PaymentWithID'
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+    post:
+      description: Creates new payment
+      requestBody:
+        content:
+          application/json':
+            schema:
+              $ref: '#/components/schemas/Payment'
+      responses:
+        201:
+          description: Payment created
+          headers:
+            Location:
+              schema:
+                type: string
+              description: path to created payment
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+  /payments/{id}:
+    get:
+      description: Returns a payment
+      parameters:
+      - name: id
+        in: path
+        description: Id of payment to be returned
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Payment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentWithID'
+        400:
+          $ref: '#/components/responses/400'
+        404:
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          $ref: '#/components/responses/500'
+
+    put:
+      description: Upserts a payment
+      parameters:
+      - name: id
+        in: path
+        description: Id of payment to be created/updated
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Payment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentWithID'
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+    delete:
+      description: Deletes given article
+      parameters:
+      - name: id
+        in: path
+        description: Id of payment to be deleted
+        required: true
+        schema:
+          type: string
+      responses:
+        204:
+          description: Confirmation of successful delete
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+components:
+  responses:
+    500:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    400:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Payment:
+      type: object
+      properties:
+        type:
+          type: string
+        version:
+          type: integer
+          example:
+        organisation_id:
+          type: string
+        attributes:
+          $ref: '#/components/schemas/Attributes'
+
+    PaymentWithID:
+      allOf:
+      - type: object
+        properties:
+          id:
+            type: string
+      - $ref: '#/components/schemas/Payment'
+
+    Attributes:
+      type: object
+      properties:
+        amount:
+          type: string
+        currency:
+          type: string
+        beneficiary_party:
+          $ref: '#/components/schemas/Party'
+        debtor_party:
+          $ref: '#/components/schemas/Party'
+        charges_information:
+          $ref: '#/components/schemas/ChargesInformation'
+        end_to_end_reference:
+          type: string
+        fx:
+          $ref: '#/components/schemas/FX'
+        numeric_reference:
+          type: string
+        payment_id:
+          type: string
+        payment_purpose:
+          type: string
+        payment_scheme:
+          type: string
+        payment_type:
+          type: string
+        processing_date:
+          type: string
+        reference:
+          type: string
+        scheme_payment_sub_type:
+          type: string
+        scheme_payment_type:
+          type: string
+        sponsor_party:
+          $ref: '#/components/schemas/SponsorParty'
+
+    Party:
+      type: object
+      properties:
+        account_name:
+          type: string
+        account_number:
+          type: string
+        account_number_code:
+          type: string
+        account_type:
+          type: integer
+        address:
+          type: string
+        bank_id:
+          type: string
+        bank_id_code:
+          type: string
+        name:
+          type: string
+
+    ChargesInformation:
+      type: object
+      properties:
+        bearer_code:
+          type: string
+        sender_charges:
+          type: array
+          items:
+            $ref: '#/components/schemas/Money'
+        receiver_charges_amount:
+          type: string
+        receiver_charges_currency:
+          type: string
+
+    Money:
+      type: object
+      properties:
+        amount:
+          type: string
+        currency:
+          type: string
+
+    FX:
+      type: object
+      properties:
+        contract_reference:
+          type: string
+        exchange_rate:
+          type: string
+        original_amount:
+          type: string
+        original_currency:
+          type: string
+
+    SponsorParty:
+      type: object
+      properties:
+        account_number:
+          type: string
+        bank_id:
+          type: string
+        bank_id_code:
+          type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+    
+      
