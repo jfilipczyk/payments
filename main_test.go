@@ -1,6 +1,7 @@
 package main_test
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -127,11 +128,15 @@ func (h *httpClientContext) responseCodeShouldBe(code int) error {
 	return nil
 }
 
-func (h *httpClientContext) responseShouldMatchJSON(body *gherkin.DocString) (err error) {
+func (h *httpClientContext) responseShouldMatchJSON(body *gherkin.DocString) error {
 	actual := h.resp.Body.Bytes()
 	expected := body.Content
-	_, err = gomega.MatchJSON(expected).Match(actual)
-	return
+	matcher := gomega.MatchJSON(expected)
+	ok, _ := matcher.Match(actual)
+	if !ok {
+		return errors.New(matcher.FailureMessage(actual))
+	}
+	return nil
 }
 
 func (h *httpClientContext) responseHeaderShouldMatch(name, pattern string) (err error) {

@@ -214,6 +214,7 @@ Feature: REST API with CRUD operations on payments
                   "account_name": "EJ Brown Black",
                   "account_number": "GB29XABC10161234567801",
                   "account_number_code": "IBAN",
+                  "account_type": 0,
                   "address": "10 Debtor Crescent Sourcetown NE1",
                   "bank_id": "203301",
                   "bank_id_code": "GBDSC",
@@ -386,6 +387,7 @@ Feature: REST API with CRUD operations on payments
     And the response body should match json:
     """
     {
+        "id": "4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43",
         "type": "Payment",
         "version": 0,
         "organisation_id": "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
@@ -595,3 +597,9 @@ Feature: REST API with CRUD operations on payments
     }
     """
     Then the response code should be 400
+    And the response body should match json:
+    """
+    {
+        "error": "invalid id format, uuid required"
+    }
+    """
