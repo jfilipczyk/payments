@@ -31,7 +31,8 @@ func (ctrl *controller) Create(c *gin.Context) {
 		internalServerError(c, err)
 		return
 	}
-	created(c, payment.ID)
+	self := newLinkSelf(&payment)
+	created(c, self.Href)
 }
 
 func (ctrl *controller) Upsert(c *gin.Context) {
@@ -51,7 +52,8 @@ func (ctrl *controller) Upsert(c *gin.Context) {
 		internalServerError(c, err)
 		return
 	}
-	ok(c, payment)
+	dto := newPaymentRespDTO(&payment)
+	ok(c, dto)
 }
 
 func (ctrl *controller) Get(c *gin.Context) {
@@ -69,7 +71,8 @@ func (ctrl *controller) Get(c *gin.Context) {
 		internalServerError(c, err)
 		return
 	}
-	ok(c, payment)
+	dto := newPaymentRespDTO(payment)
+	ok(c, dto)
 }
 
 func (ctrl *controller) GetList(c *gin.Context) {
@@ -78,7 +81,8 @@ func (ctrl *controller) GetList(c *gin.Context) {
 		internalServerError(c, err)
 		return
 	}
-	ok(c, list)
+	dto := newPaymenListRespDTO(list)
+	ok(c, dto)
 }
 
 func (ctrl *controller) Delete(c *gin.Context) {
@@ -121,8 +125,8 @@ func internalServerError(c *gin.Context, err error) {
 	c.Error(err)
 }
 
-func created(c *gin.Context, id string) {
-	c.Header("Location", c.Request.URL.Path+"/"+id)
+func created(c *gin.Context, selfHref string) {
+	c.Header("Location", selfHref)
 	c.Status(http.StatusCreated)
 }
 

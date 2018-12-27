@@ -18,9 +18,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items: 
-                  $ref: '#/components/schemas/PaymentWithID'
+                $ref: '#/components/schemas/PaymentListResp'
         500:
           $ref: '#/components/responses/500'
 
@@ -60,7 +58,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentWithID'
+                $ref: '#/components/schemas/PaymentResp'
         400:
           $ref: '#/components/responses/400'
         404:
@@ -88,7 +86,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaymentWithID'
+                $ref: '#/components/schemas/PaymentResp'
         400:
           $ref: '#/components/responses/400'
         500:
@@ -127,6 +125,36 @@ components:
             $ref: '#/components/schemas/Error'
 
   schemas:
+    PaymentResp:
+      allOf:
+      - $ref: '#/components/schemas/PaymentWithID'
+      - type: object
+        properties:
+          links:
+            type: array
+            items:
+              $ref: '#/components/schemas/Link'
+
+    PaymentListResp:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentResp'
+        links:
+            type: array
+            items:
+              $ref: '#/components/schemas/Link'
+
+    Link:
+      type: object
+      properties:
+        rel:
+          type: string
+        href:
+          type: string
+
     Payment:
       type: object
       properties:
