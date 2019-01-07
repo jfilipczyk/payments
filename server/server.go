@@ -11,12 +11,14 @@ import (
 	"github.com/jfilipczyk/payments/model"
 )
 
+// Server when run listens on a given port and provides REST API
 type Server struct {
 	port   int
 	engine *gin.Engine
 	ctrl   *controller
 }
 
+// NewServer creates new instance of a Server
 func NewServer(repo model.Repository, cfg *config.Config) *Server {
 	ctrl := newController(repo)
 	engine := gin.Default()
@@ -36,6 +38,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	s.engine.ServeHTTP(w, req)
 }
 
+// Run starts the server
 func (s *Server) Run() {
 	s.engine.Run(fmt.Sprintf(":%d", s.port))
 }

@@ -1,5 +1,6 @@
 package model
 
+// Payment model
 type Payment struct {
 	ID             string     `json:"id" bson:"_id"`
 	Type           string     `json:"type" bson:"type"`
@@ -8,6 +9,7 @@ type Payment struct {
 	Attributes     Attributes `json:"attributes" bson:"attributes"`
 }
 
+// Attributes model
 type Attributes struct {
 	Money                `bson:",inline"`
 	BeneficiaryParty     Party              `json:"beneficiary_party" bson:"beneficiary_party"`
@@ -27,6 +29,7 @@ type Attributes struct {
 	SponsorParty         SponsorParty       `json:"sponsor_party" bson:"sponsor_party"`
 }
 
+// Party model
 type Party struct {
 	AccountName       string `json:"account_name" bson:"account_name"`
 	AccountNumber     string `json:"account_number" bson:"account_number"`
@@ -38,6 +41,7 @@ type Party struct {
 	Name              string `json:"name" bson:"name"`
 }
 
+// ChargesInformation model
 type ChargesInformation struct {
 	BearerCode              string  `json:"bearer_code" bson:"bearer_code"`
 	SenderCharges           []Money `json:"sender_charges" bson:"sender_charges"`
@@ -45,6 +49,7 @@ type ChargesInformation struct {
 	ReceiverChargesCurrency string  `json:"receiver_charges_currency" bson:"receiver_charges_currency"`
 }
 
+// FX model
 type FX struct {
 	ContractReference string `json:"contract_reference" bson:"contract_reference"`
 	ExchangeRate      string `json:"exchange_rate" bson:"exchange_rate"`
@@ -52,12 +57,14 @@ type FX struct {
 	OriginalCurrency  string `json:"original_currency" bson:"original_currency"`
 }
 
+// SponsorParty model
 type SponsorParty struct {
 	AccountNumber string `json:"account_number" bson:"account_number"`
 	BankID        string `json:"bank_id" bson:"bank_id"`
 	BankIDCode    string `json:"bank_id_code" bson:"bank_id_code"`
 }
 
+// Money model
 type Money struct {
 	Amount   string `json:"amount" bson:"amount"`
 	Currency string `json:"currency" bson:"currency"`
