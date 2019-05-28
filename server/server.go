@@ -25,7 +25,6 @@ func NewServer(repo model.Repository, cfg *config.Config) *Server {
 	engine.Use(errorHandler())
 	v1 := engine.Group("/v1")
 	{
-		v1.POST("/payments", ctrl.Create)
 		v1.GET("/payments/:id", ctrl.Get)
 		v1.GET("/payments", ctrl.GetList)
 		v1.PUT("/payments/:id", ctrl.Upsert)

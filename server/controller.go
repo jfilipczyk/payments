@@ -19,22 +19,6 @@ func newController(repo model.Repository) *controller {
 	return &controller{repo}
 }
 
-func (ctrl *controller) Create(c *gin.Context) {
-	var payment model.Payment
-	if err := c.ShouldBindJSON(&payment); err != nil {
-		badRequest(c, err)
-		return
-	}
-	payment.ID = genID()
-	err := ctrl.repo.Upsert(&payment)
-	if err != nil {
-		internalServerError(c, err)
-		return
-	}
-	self := newLinkSelf(&payment)
-	created(c, self.Href)
-}
-
 func (ctrl *controller) Upsert(c *gin.Context) {
 	var payment model.Payment
 	if err := c.ShouldBindJSON(&payment); err != nil {
@@ -105,10 +89,6 @@ func getIDFromParams(c *gin.Context) (string, error) {
 		return "", errInvalidIDFormat
 	}
 	return id, nil
-}
-
-func genID() string {
-	return uuid.NewV4().String()
 }
 
 func badRequest(c *gin.Context, err error) {

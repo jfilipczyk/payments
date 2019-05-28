@@ -1,7 +1,6 @@
 package main_test
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -9,17 +8,16 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/caarlos0/env"
-	"github.com/onsi/gomega"
 	"github.com/tidwall/gjson"
 
 	"github.com/DATA-DOG/godog"
 	"github.com/DATA-DOG/godog/gherkin"
 
+	"github.com/jfilipczyk/gomatch"
 	"github.com/jfilipczyk/payments/config"
 	"github.com/jfilipczyk/payments/model"
 	"github.com/jfilipczyk/payments/server"
@@ -131,33 +129,12 @@ func (h *httpClientContext) responseCodeShouldBe(code int) error {
 func (h *httpClientContext) responseShouldMatchJSON(body *gherkin.DocString) error {
 	actual := h.resp.Body.Bytes()
 	expected := body.Content
-	matcher := gomega.MatchJSON(expected)
-	ok, _ := matcher.Match(actual)
+	matcher := gomatch.NewDefaultJSONMatcher()
+	ok, err := matcher.Match(string(expected), string(actual))
 	if !ok {
-		return errors.New(matcher.FailureMessage(actual))
+		return err
 	}
 	return nil
-}
-
-func (h *httpClientContext) responseHeaderShouldMatch(name, pattern string) (err error) {
-	vals, ok := h.resp.HeaderMap[name]
-	if !ok {
-		err = fmt.Errorf("expected header '%s' does not exist", name)
-		return
-	}
-	if len(vals) != 1 {
-		err = fmt.Errorf("expected header '%s' does not have one value", name)
-		return
-	}
-	val := vals[0]
-	ok, err = regexp.MatchString(pattern, val)
-	if err != nil {
-		return
-	}
-	if !ok {
-		err = fmt.Errorf("header '%s' does not match expected pattern, header value: %s", name, val)
-	}
-	return
 }
 
 func resetDatabase(interface{}) {
@@ -219,11 +196,10 @@ func HttpClientContext(s *godog.Suite) {
 
 	s.BeforeScenario(c.resetResponse)
 
-	s.Step(`^I send "(GET|POST|PUT|DELETE)" request to "([^"]*)"$`, c.iSendRequestTo)
+	s.Step(`^I send "(GET|PUT|DELETE)" request to "([^"]*)"$`, c.iSendRequestTo)
 	s.Step(`^the response code should be (\d+)$`, c.responseCodeShouldBe)
 	s.Step(`^the response body should match json:$`, c.responseShouldMatchJSON)
 	s.Step(`^I send "([^"]*)" request to "([^"]*)" with body:$`, c.iSendRequestToWithBody)
-	s.Step(`^the response header "([^"]*)" should match "([^"]*)"$`, c.responseHeaderShouldMatch)
 }
 
 func DatabaseContext(s *godog.Suite) {

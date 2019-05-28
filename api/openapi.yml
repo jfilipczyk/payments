@@ -22,26 +22,6 @@ paths:
         500:
           $ref: '#/components/responses/500'
 
-    post:
-      description: Creates new payment
-      requestBody:
-        content:
-          application/json':
-            schema:
-              $ref: '#/components/schemas/Payment'
-      responses:
-        201:
-          description: Payment created
-          headers:
-            Location:
-              schema:
-                type: string
-              description: path to created payment
-        400:
-          $ref: '#/components/responses/400'
-        500:
-          $ref: '#/components/responses/500'
-
   /payments/{id}:
     get:
       description: Returns a payment

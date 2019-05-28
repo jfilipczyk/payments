@@ -1,10 +1,10 @@
 Feature: REST API with CRUD operations on payments
   In order to provide GUI for payments management 
   As a frontent developer
-  I need to be able to retrive, update and delete payments
+  I need to be able to create, retrive, update and delete payments
 
-  Scenario: Create new payment
-    When I send "POST" request to "/v1/payments" with body:
+    Scenario: Insert payment
+    When I send "PUT" request to "/v1/payments/4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43" with body:
     """
     {
         "type": "Payment",
@@ -42,6 +42,7 @@ Feature: REST API with CRUD operations on payments
                 "account_name": "EJ Brown Black",
                 "account_number": "GB29XABC10161234567801",
                 "account_number_code": "IBAN",
+                "account_type": 0,
                 "address": "10 Debtor Crescent Sourcetown NE1",
                 "bank_id": "203301",
                 "bank_id_code": "GBDSC",
@@ -71,10 +72,8 @@ Feature: REST API with CRUD operations on payments
         }
     }
     """
-    Then the response code should be 201
-    And the response header "Location" should match "/v1/payments/[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}"
+    Then the response code should be 200
     And the database should have 1 record
-
 
   Scenario: Get single payment
     Given the database contains payments:
@@ -413,153 +412,16 @@ Feature: REST API with CRUD operations on payments
     And the response body should match json:
     """
     {
-        "id": "4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43",
-        "type": "Payment",
-        "version": 0,
-        "organisation_id": "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
         "attributes": {
             "amount": "999.99",
-            "beneficiary_party": {
-                "account_name": "W Owens",
-                "account_number": "31926819",
-                "account_number_code": "BBAN",
-                "account_type": 0,
-                "address": "1 The Beneficiary Localtown SE2",
-                "bank_id": "403000",
-                "bank_id_code": "GBDSC",
-                "name": "Wilfred Jeremiah Owens"
-            },
-            "charges_information": {
-                "bearer_code": "SHAR",
-                "sender_charges": [
-                    {
-                        "amount": "5.00",
-                        "currency": "GBP"
-                    },
-                    {
-                        "amount": "10.00",
-                        "currency": "USD"
-                    }
-                ],
-                "receiver_charges_amount": "1.00",
-                "receiver_charges_currency": "USD"
-            },
-            "currency": "GBP",
-            "debtor_party": {
-                "account_name": "EJ Brown Black",
-                "account_number": "GB29XABC10161234567801",
-                "account_number_code": "IBAN",
-                "account_type": 0,
-                "address": "10 Debtor Crescent Sourcetown NE1",
-                "bank_id": "203301",
-                "bank_id_code": "GBDSC",
-                "name": "Emelia Jane Brown"
-            },
-            "end_to_end_reference": "Wil piano Jan",
-            "fx": {
-                "contract_reference": "FX123",
-                "exchange_rate": "2.00000",
-                "original_amount": "200.42",
-                "original_currency": "USD"
-            },
-            "numeric_reference": "1002001",
-            "payment_id": "123456789012345678",
-            "payment_purpose": "Paying for goods/services",
-            "payment_scheme": "FPS",
-            "payment_type": "Credit",
-            "processing_date": "2017-01-18",
-            "reference": "Payment for Em's piano lessons",
-            "scheme_payment_sub_type": "InternetBanking",
-            "scheme_payment_type": "ImmediatePayment",
-            "sponsor_party": {
-                "account_number": "56781234",
-                "bank_id": "123123",
-                "bank_id_code": "GBDSC"
-            }
+            "@...@": ""
         },
-        "links": [
-            {
-                "rel": "self",
-                "href": "/v1/payments/4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43"
-            }
-        ]
+        "@...@": ""
     }
     """
     And the database should have record with id "4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43" and value "999.99" under path "attributes.amount"
 
-  Scenario: Insert payment with external ID
-    When I send "PUT" request to "/v1/payments/4ee3a8d8-ca7b-4290-a52c-dd5b6165ec43" with body:
-    """
-    {
-        "type": "Payment",
-        "version": 0,
-        "organisation_id": "743d5b63-8e6f-432e-a8fa-c5d8d2ee5fcb",
-        "attributes": {
-            "amount": "100.21",
-            "beneficiary_party": {
-                "account_name": "W Owens",
-                "account_number": "31926819",
-                "account_number_code": "BBAN",
-                "account_type": 0,
-                "address": "1 The Beneficiary Localtown SE2",
-                "bank_id": "403000",
-                "bank_id_code": "GBDSC",
-                "name": "Wilfred Jeremiah Owens"
-            },
-            "charges_information": {
-                "bearer_code": "SHAR",
-                "sender_charges": [
-                    {
-                        "amount": "5.00",
-                        "currency": "GBP"
-                    },
-                    {
-                        "amount": "10.00",
-                        "currency": "USD"
-                    }
-                ],
-                "receiver_charges_amount": "1.00",
-                "receiver_charges_currency": "USD"
-            },
-            "currency": "GBP",
-            "debtor_party": {
-                "account_name": "EJ Brown Black",
-                "account_number": "GB29XABC10161234567801",
-                "account_number_code": "IBAN",
-                "account_type": 0,
-                "address": "10 Debtor Crescent Sourcetown NE1",
-                "bank_id": "203301",
-                "bank_id_code": "GBDSC",
-                "name": "Emelia Jane Brown"
-            },
-            "end_to_end_reference": "Wil piano Jan",
-            "fx": {
-                "contract_reference": "FX123",
-                "exchange_rate": "2.00000",
-                "original_amount": "200.42",
-                "original_currency": "USD"
-            },
-            "numeric_reference": "1002001",
-            "payment_id": "123456789012345678",
-            "payment_purpose": "Paying for goods/services",
-            "payment_scheme": "FPS",
-            "payment_type": "Credit",
-            "processing_date": "2017-01-18",
-            "reference": "Payment for Em's piano lessons",
-            "scheme_payment_sub_type": "InternetBanking",
-            "scheme_payment_type": "ImmediatePayment",
-            "sponsor_party": {
-                "account_number": "56781234",
-                "bank_id": "123123",
-                "bank_id_code": "GBDSC"
-            }
-        }
-    }
-    """
-    Then the response code should be 200
-    And the database should have 1 record
-
-  Scenario: Payment with external ID which is not valid UUID
+  Scenario: Insert payment with ID which is not valid UUID
     When I send "PUT" request to "/v1/payments/4ee3a8d8-XXXX-YYYY-ZZZZ-dd5b6165ec43" with body:
     """
     {
